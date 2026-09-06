@@ -26,7 +26,6 @@
             min-height: 100vh;
         }
 
-        /* تأثيرات النجوم الكونية في الخلفية */
         .cosmic-header {
             display: flex;
             justify-content: space-between;
@@ -62,7 +61,6 @@
             background: linear-gradient(45deg, var(--neon-blue), var(--portal-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(121, 40, 202, 0.5);
         }
 
         .cosmic-nav {
@@ -87,7 +85,6 @@
             text-shadow: 0 0 10px var(--neon-blue);
         }
 
-        /* حاوية الأبعاد الكونية */
         .multiverse-container {
             max-width: 1300px;
             margin: 40px auto;
@@ -110,10 +107,6 @@
             padding-bottom: 10px;
             margin-bottom: 25px;
             font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-shadow: 0 0 10px rgba(0, 223, 216, 0.4);
         }
 
         .galaxy-grid {
@@ -122,24 +115,16 @@
             gap: 20px;
         }
 
-        /* كروت العالم الموازي */
         .quantum-card {
-            background: rgba(20, 15, 45, 0.8);
-            border: 1px solid rgba(0, 223, 216, 0.2);
+            background: rgba(20, 15, 45, 0.9);
+            border: 1px solid rgba(0, 223, 216, 0.3);
             border-radius: 12px;
             padding: 15px;
             width: 240px;
             box-sizing: border-box;
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-        }
-
-        .quantum-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 223, 216, 0.3);
         }
 
         .quantum-card img, .quantum-card video {
@@ -147,20 +132,20 @@
             height: 150px;
             object-fit: cover;
             border-radius: 8px;
+            background: #000;
             border: 1px solid rgba(121, 40, 202, 0.3);
         }
 
         .quantum-card h4 {
             color: white;
-            margin: 12px 0 6px;
-            font-size: 1.05rem;
+            margin: 10px 0 5px;
+            font-size: 1rem;
         }
 
         .quantum-card p {
             color: #9ca3af;
             font-size: 0.85rem;
-            margin: 0 0 12px;
-            line-height: 1.4;
+            margin: 0 0 10px;
         }
 
         .quantum-stats {
@@ -169,10 +154,9 @@
             font-size: 0.8rem;
             color: var(--neon-blue);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 10px;
+            padding-top: 8px;
         }
 
-        /* زر لوحة التحكم الفضائي الأحمر */
         .cosmic-admin-btn {
             background: linear-gradient(135deg, #ef4444, #b91c1c);
             color: white;
@@ -184,7 +168,6 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.3s ease;
             position: fixed;
             top: 20px;
             left: 20px;
@@ -192,18 +175,13 @@
             font-size: 0.9rem;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .cosmic-admin-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.9);
-        }
     </style>
 </head>
 <body>
 
     <header class="cosmic-header">
         <div class="portal-brand">
-            <img id="site-logo" src="https://i.imgur.com/8Km9tLL.png" alt="Portal Logo">
+            <img id="site-logo" src="https://i.imgur.com/8Km9tLL.png" alt="Logo">
             <h1>Gojo Esultan | البعد الموازي</h1>
         </div>
         <ul class="cosmic-nav">
@@ -212,9 +190,8 @@
         </ul>
     </header>
 
-    <!-- مكان الأقسام والعالم الموازي -->
     <div class="multiverse-container" id="cosmic-content-container">
-        <!-- يتم جلب المحتوى وعرضه هنا ديناميكياً -->
+        <!-- يتم جلب المحتوى وعرضه هنا تلقائياً -->
     </div>
 
     <script src="script.js"></script>
