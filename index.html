@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gojo Esultan - البوابة الكونية الموازية</title>
+    <title>Gojo Esultan - البوابة الكونية الموازية الشاملة</title>
     <style>
         :root {
             --cosmic-bg: #030014;
@@ -11,29 +11,37 @@
             --neon-blue: #00dfd8;
             --star-glow: rgba(0, 223, 216, 0.5);
             --text-main: #f3f4f6;
+            --card-bg: rgba(20, 15, 45, 0.95);
+            --border-glow: rgba(0, 223, 216, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             background-color: var(--cosmic-bg);
             color: var(--text-main);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 20% 30%, rgba(121, 40, 202, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 223, 216, 0.1) 0%, transparent 40%);
+                radial-gradient(circle at 10% 20%, rgba(121, 40, 202, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 223, 216, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.08) 0%, transparent 50%);
             min-height: 100vh;
         }
 
+        /* رأس البوابة الكونية */
         .cosmic-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            background: rgba(10, 5, 30, 0.85);
+            background: rgba(10, 5, 30, 0.9);
             border-bottom: 1px solid rgba(0, 223, 216, 0.3);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -47,28 +55,28 @@
         }
 
         .portal-brand img {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 15px var(--star-glow);
+            box-shadow: 0 0 20px var(--star-glow);
             object-fit: cover;
         }
 
         .portal-brand h1 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin: 0;
-            background: linear-gradient(45deg, var(--neon-blue), var(--portal-purple));
+            background: linear-gradient(45deg, var(--neon-blue), var(--portal-purple), #ff007f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
 
         .cosmic-nav {
             display: flex;
-            gap: 25px;
+            gap: 30px;
             list-style: none;
-            margin: 0;
-            padding: 0;
             align-items: center;
         }
 
@@ -77,7 +85,20 @@
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .cosmic-nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            right: 0;
+            background-color: var(--neon-blue);
+            transition: width 0.3s ease;
         }
 
         .cosmic-nav a:hover {
@@ -85,125 +106,235 @@
             text-shadow: 0 0 10px var(--neon-blue);
         }
 
+        .cosmic-nav a:hover::after {
+            width: 100%;
+        }
+
+        /* الحاوية الرئيسية للكون */
         .multiverse-container {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 40px auto;
             padding: 0 25px;
         }
 
+        /* أقسام الأبعاد */
         .dimension-section {
-            background: rgba(13, 10, 35, 0.6);
+            background: rgba(13, 10, 35, 0.7);
             border: 1px solid rgba(121, 40, 202, 0.4);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 40px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 45px;
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dimension-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0,223,216,0.1) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .dimension-title {
             color: var(--neon-blue);
             border-bottom: 2px solid rgba(0, 223, 216, 0.3);
-            padding-bottom: 10px;
-            margin-bottom: 25px;
-            font-size: 1.4rem;
-        }
-
-        .galaxy-grid {
+            padding-bottom: 12px;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
         }
 
+        /* شبكة المجرة للعرض */
+        .galaxy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        /* الكارت القوانتي */
         .quantum-card {
-            background: rgba(20, 15, 45, 0.9);
-            border: 1px solid rgba(0, 223, 216, 0.3);
-            border-radius: 12px;
-            padding: 15px;
-            width: 240px;
-            box-sizing: border-box;
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .quantum-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 223, 216, 0.25);
+            border-color: var(--neon-blue);
         }
 
         .quantum-card img, .quantum-card video {
             width: 100%;
-            height: 150px;
+            height: 180px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 12px;
             background: #000;
             border: 1px solid rgba(121, 40, 202, 0.3);
+            margin-bottom: 12px;
         }
 
         .quantum-card h4 {
-            color: white;
-            margin: 10px 0 5px;
-            font-size: 1rem;
+            color: #ffffff;
+            margin: 8px 0 6px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.4;
         }
 
         .quantum-card p {
             color: #9ca3af;
-            font-size: 0.85rem;
-            margin: 0 0 10px;
+            font-size: 0.9rem;
+            margin: 0 0 15px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
+        /* إحصائيات وتفاعلات الكارت */
         .quantum-stats {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--neon-blue);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 8px;
+            padding-top: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            margin: -18px -18px 0 -18px;
+            padding: 12px 18px;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
         }
 
         .quantum-stats span {
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            user-select: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(0, 223, 216, 0.05);
         }
 
         .quantum-stats span:hover {
-            transform: scale(1.1);
+            transform: scale(1.08);
+            background: rgba(0, 223, 216, 0.15);
+            color: #fff;
+            text-shadow: 0 0 8px var(--neon-blue);
         }
 
+        /* زر الإدارة العائم */
         .cosmic-admin-btn {
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            background: linear-gradient(135deg, #ef4444, #991b1b);
             color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
             font-weight: bold;
             text-decoration: none;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.7);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 22px;
+            left: 30px;
             z-index: 99999;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .cosmic-admin-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.9);
+        }
+
+        /* تذييل الصفحة الفضائي */
+        .cosmic-footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+            border-top: 1px solid rgba(121, 40, 202, 0.2);
+            margin-top: 60px;
             font-size: 0.9rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(3, 0, 20, 0.8);
+        }
+
+        .empty-dimension {
+            color: #6b7280;
+            font-size: 1rem;
+            padding: 20px;
+            text-align: center;
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .cosmic-header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .cosmic-nav {
+                gap: 15px;
+            }
+            .multiverse-container {
+                padding: 0 15px;
+            }
+            .cosmic-admin-btn {
+                position: static;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- رأس البوابة -->
     <header class="cosmic-header">
         <div class="portal-brand">
-            <img id="site-logo" src="https://i.imgur.com/8Km9tLL.png" alt="Logo">
+            <img id="site-logo" src="https://i.imgur.com/8Km9tLL.png" alt="Gojo Logo">
             <h1>Gojo Esultan | البعد الموازي</h1>
         </div>
         <ul class="cosmic-nav">
             <li><a href="index.html">البوابة الرئيسية</a></li>
-            <li><a href="admin.html">مركز التحكم</a></li>
+            <li><a href="admin.html">مركز التحكم الكوني</a></li>
         </ul>
     </header>
 
-    <div class="multiverse-container" id="cosmic-content-container">
-        <!-- يتم جلب المحتوى وعرضه هنا تلقائياً -->
-    </div>
+    <!-- حاوية العرض الرئيسية -->
+    <main class="multiverse-container" id="cosmic-content-container">
+        <!-- يتم جلب وعرض الأقسام والكروت ديناميكياً هنا عبر محرك الجافاسكريبت -->
+    </main>
 
+    <!-- تذييل الصفحة -->
+    <footer class="cosmic-footer">
+        <p>جميع الحقوق محفوظة ©️ Gojo Esultan - بوابات الأبعاد الموازية 2026</p>
+    </footer>
+
+    <!-- محرك التشغيل البرمجي -->
     <script src="script.js"></script>
 </body>
 </html>
