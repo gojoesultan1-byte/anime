@@ -1,10 +1,9 @@
-// Gojo Esultan Quantum Multiverse Engine v20.26
+// Gojo Esultan Full Engine v26.0
 const ADMIN_EMAIL = "gojoesultan1@gmail.com";
 const ADMIN_ID = "111111111";
 const ADMIN_PASS = "ahmedgojo1234567890";
 const ADMIN_SECRET_PASS_CODE = "010079340866";
 
-// تفعيل بيانات النظام الكوني إذا كانت فارغة
 if (!localStorage.getItem("gojo_users")) {
     let adminUser = {
         email: ADMIN_EMAIL,
@@ -29,19 +28,18 @@ if (!localStorage.getItem("gojo_sections")) {
     localStorage.setItem("gojo_sections", JSON.stringify(defaultSections));
 }
 
-// بوستات أبعاد كونية تجريبية تظهر فوراً لو لم ترفع شيئاً بعد
 if (!localStorage.getItem("gojo_posts") || JSON.parse(localStorage.getItem("gojo_posts")).length === 0) {
     let samplePosts = [
         {
             id: Date.now(),
             title: "طاقة البعد الموازي",
-            desc: "أول إشارة رصدت من العوالم الفضائية الموازية.",
+            desc: "تجربة عرض المحتوى والصور والفيديوهات.",
             url: "https://i.imgur.com/8Km9tLL.png",
             section: "صور ومنشورات الأنمي",
             type: "image",
-            likes: 42,
+            likes: 15,
             dislikes: 0,
-            views: 133
+            views: 40
         }
     ];
     localStorage.setItem("gojo_posts", JSON.stringify(samplePosts));
@@ -68,7 +66,6 @@ function renderCosmicAdminButton() {
     let existingBtn = document.getElementById("cosmic-admin-red-btn");
     if (existingBtn) existingBtn.remove();
 
-    // إظهار زر لوحة التحكم الفضائي الأحمر حصرياً للأدمن
     if (currentUser && currentUser.id === ADMIN_ID) {
         let redBtn = document.createElement("a");
         redBtn.id = "cosmic-admin-red-btn";
@@ -99,10 +96,15 @@ function renderMultiverseContent() {
                 let mediaSrc = p.url || p.image || "https://i.imgur.com/8Km9tLL.png";
                 let mediaElement = "";
 
-                if (p.type === "video" || mediaSrc.includes("data:video")) {
-                    mediaElement = `<video src="${mediaSrc}" controls></video>`;
+                // التحقق من الفيديو ودعم زر ملء الشاشة (Fullscreen) والسرعة أوتوماتيك عبر controls المتصفح
+                if (p.type === "video" || mediaSrc.includes("data:video") || mediaSrc.endsWith(".mp4")) {
+                    mediaElement = `
+                        <video src="${mediaSrc}" controls controlslist="nodownload" playsinline></video>
+                    `;
                 } else {
-                    mediaElement = `<img src="${mediaSrc}" alt="${p.title || 'كون'}" onerror="this.src='https://i.imgur.com/8Km9tLL.png'">`;
+                    mediaElement = `
+                        <img src="${mediaSrc}" alt="${p.title || 'كون'}" onerror="this.src='https://i.imgur.com/8Km9tLL.png'">
+                    `;
                 }
 
                 cardsHtml += `
@@ -114,7 +116,6 @@ function renderMultiverseContent() {
                         </div>
                         <div class="quantum-stats">
                             <span>✨ ${p.likes || 0}</span>
-                            <span>🌀 ${p.dislikes || 0}</span>
                             <span>👁️ ${p.views || 0}</span>
                         </div>
                     </div>
