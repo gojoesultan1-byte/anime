@@ -1,4 +1,4 @@
-// Gojo Esultan Complete Engine
+// Gojo Esultan Precise Layout Engine
 const ADMIN_EMAIL = "gojoesultan1@gmail.com";
 const ADMIN_ID = "111111111";
 const ADMIN_PASS = "ahmedgojo1234567890";
@@ -28,80 +28,105 @@ if (!localStorage.getItem("gojo_sections")) {
     localStorage.setItem("gojo_sections", JSON.stringify(defaultSections));
 }
 
+if (!localStorage.getItem("gojo_posts") || JSON.parse(localStorage.getItem("gojo_posts")).length === 0) {
+    let samplePosts = [
+        {
+            id: 1,
+            title: "لقطة أسطورية",
+            desc: "تجربة عرض المحتوى في المكان المحدد.",
+            url: "https://i.imgur.com/8Km9tLL.png",
+            section: "صور ومنشورات الأنمي",
+            type: "image",
+            likes: 10,
+            dislikes: 0,
+            views: 20
+        }
+    ];
+    localStorage.setItem("gojo_posts", JSON.stringify(samplePosts));
+}
+
 window.addEventListener("DOMContentLoaded", () => {
     applySiteSettings();
+    injectAdminButtonOnTop();
     loadHomeContent();
-    checkAuthUI();
 });
 
 function applySiteSettings() {
     let settings = JSON.parse(localStorage.getItem("gojo_settings"));
-    if (settings) {
-        if (settings.logoUrl) {
-            let logoImgs = document.querySelectorAll("#site-logo, .site-logo-element");
-            logoImgs.forEach(img => {
-                img.src = settings.logoUrl;
-            });
-        }
-        if (settings.primaryColor) {
-            document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
-        }
+    if (settings && settings.logoUrl) {
+        let logoImgs = document.querySelectorAll("#site-logo, .site-logo-element");
+        logoImgs.forEach(img => {
+            img.src = settings.logoUrl;
+        });
     }
 }
 
-function checkAuthUI() {
+function injectAdminButtonOnTop() {
     let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-    let adminBtn = document.getElementById("admin-panel-btn");
-    if (currentUser && currentUser.id === "111111111") {
-        if (adminBtn) adminBtn.style.display = "block";
-    } else {
-        if (adminBtn) adminBtn.style.display = "none";
+    let navContainer = document.querySelector("nav, header, .nav-links, .header-menu") || document.body;
+    
+    let oldBtn = document.getElementById("admin-red-btn");
+    if (oldBtn) oldBtn.remove();
+
+    // يظهر الزرار الأحمر لو المستخدم الحالي هو الأدمن
+    if (currentUser && currentUser.id === ADMIN_ID) {
+        let redBtn = document.createElement("a");
+        redBtn.id = "admin-red-btn";
+        redBtn.href = "admin.html";
+        redBtn.innerHTML = "🔴 لوحة التحكم";
+        redBtn.style.cssText = "background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; margin-left: 10px; display: inline-block; font-size: 0.9rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3);";
+        
+        // محاولة وضعه في الشريط العبوي فوق
+        let targetNav = document.querySelector("nav") || document.body.firstElementChild;
+        if (targetNav) {
+            targetNav.prepend(redBtn);
+        }
     }
 }
 
 function loadHomeContent() {
+    // استهداف المكان المحدّد بالخط الأصفر بالضبط
     let container = document.getElementById("main-content-container");
-    if (!container) return;
+    if (!container) {
+        // لو الحاوية مش موجودة في الـ HTML، بنعملها إدراج تلقائي في مكان الخط الأصفر
+        container = document.createElement("div");
+        container.id = "main-content-container";
+        container.style.cssText = "padding: 20px; width: 100%; box-sizing: border-box;";
+        
+        let targetLineArea = document.querySelector(".content-area, main") || document.body;
+        targetLineArea.appendChild(container);
+    }
 
-    let sections = JSON.parse(localStorage.getItem("gojo_sections")) || [];
+    let sections = JSON.parse(localStorage.getItem("gojo_sections")) || ["صور ومنشورات الأنمي", "مشاهدة الأنمي"];
     let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
     
     container.innerHTML = "";
 
     sections.forEach(sec => {
-        let secPosts = posts.filter(p => p.section === sec);
+        let secPosts = posts.filter(p => p.section === sec || (!p.section && sec === "صور ومنشورات الأنمي"));
         let postsHtml = "";
 
         if (secPosts.length === 0) {
-            postsHtml = `<p style="color: #94a3b8; padding: 15px;">لا توجد محتويات مضافة في هذا القسم حتى الآن. يمكنك إضافتها من لوحة التحكم!</p>`;
+            postsHtml = `<p style="color: #94a3b8; padding: 10px; font-size: 0.85rem;">لا توجد منشورات في هذا القسم.</p>`;
         } else {
             secPosts.forEach(p => {
-                let mediaElement = "";
-                if (p.type === "video") {
-                    mediaElement = `<video src="${p.url}" controls style="width: 100%; height: 150px; object-fit: cover; border-radius: 6px; background: black;"></video>`;
-                } else {
-                    mediaElement = `<img src="${p.url}" alt="${p.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 6px;">`;
-                }
+                let mediaSrc = p.url || p.image || "https://i.imgur.com/8Km9tLL.png";
+                let mediaElement = `<img src="${mediaSrc}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px;" onerror="this.src='https://i.imgur.com/8Km9tLL.png'">`;
 
                 postsHtml += `
-                    <div class="anime-card" style="background: #1e293b; border-radius: 10px; padding: 12px; width: 240px; display: inline-block; margin: 10px; vertical-align: top; border: 1px solid #334155;">
+                    <div style="background: #1e293b; border-radius: 8px; padding: 10px; width: 200px; display: inline-block; margin: 8px; vertical-align: top; border: 1px solid #334155;">
                         ${mediaElement}
-                        <h4 style="margin: 10px 0 5px; color: white; font-size: 1rem;">${p.title}</h4>
-                        <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px; line-height: 1.4;">${p.desc}</p>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #38bdf8; border-top: 1px solid #334155; padding-top: 8px;">
-                            <span>👍 ${p.likes || 0}</span>
-                            <span>👎 ${p.dislikes || 0}</span>
-                            <span>👁️ ${p.views || 0}</span>
-                        </div>
+                        <h4 style="margin: 8px 0 4px; color: white; font-size: 0.95rem;">${p.title || 'بدون عنوان'}</h4>
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px;">${p.desc || ''}</p>
                     </div>
                 `;
             });
         }
 
         container.innerHTML += `
-            <div class="section-block" style="margin-bottom: 35px; background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: 12px;">
-                <h2 style="border-bottom: 2px solid #38bdf8; padding-bottom: 8px; margin-bottom: 15px; color: #f8fafc; font-size: 1.25rem;">📁 ${sec}</h2>
-                <div class="section-posts-grid" style="display: flex; flex-wrap: wrap; gap: 15px;">
+            <div style="margin-bottom: 25px; background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 10px; border: 1px solid #38bdf844;">
+                <h3 style="color: #38bdf8; border-bottom: 1px solid #38bdf8; padding-bottom: 5px; margin-bottom: 12px; font-size: 1.1rem;">📁 ${sec}</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                     ${postsHtml}
                 </div>
             </div>
