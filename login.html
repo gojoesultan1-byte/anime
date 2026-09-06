@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - Gojo Esultan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo-container">
+            <img src="" alt="Logo" id="site-logo">
+            <h1><a href="index.html" style="color:white; text-decoration:none;">Gojo Esultan</a></h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <h2 id="form-title" style="margin-bottom: 1.5rem; text-align:center;">تسجيل الدخول</h2>
+            
+            <div id="error-msg" style="color: #ef4444; margin-bottom: 10px; text-align: center; font-weight:bold;"></div>
+
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label>البريد الإلكتروني:</label>
+                    <input type="email" id="email" required placeholder="أدخل البريد الإلكتروني">
+                </div>
+                
+                <div class="form-group">
+                    <label>كلمة المرور:</label>
+                    <input type="password" id="password" required placeholder="أدخل كلمة المرور">
+                </div>
+
+                <button type="submit" class="btn btn-register" style="width: 100%; margin-top: 10px;" id="submit-btn">دخول</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 15px;">
+                <span id="switch-text">ليس لديك حساب؟</span> 
+                <a href="#" onclick="toggleMode(event)" id="switch-link" style="color: var(--secondary-color); font-weight:bold;">إنشاء حساب جديد</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let isRegisterMode = window.location.search.includes('mode=register');
+
+        function updateFormUI() {
+            let title = document.getElementById("form-title");
+            let btn = document.getElementById("submit-btn");
+            let switchText = document.getElementById("switch-text");
+            let switchLink = document.getElementById("switch-link");
+
+            if (isRegisterMode) {
+                title.innerText = "إنشاء حساب جديد";
+                btn.innerText = "تسجيل حساب وبناء ID فريد";
+                switchText.innerText = "لديك حساب بالفعل؟";
+                switchLink.innerText = "تسجيل الدخول";
+            } else {
+                title.innerText = "تسجيل الدخول";
+                btn.innerText = "دخول";
+                switchText.innerText = "ليس لديك حساب؟";
+                switchLink.innerText = "إنشاء حساب جديد";
+            }
+        }
+
+        function toggleMode(e) {
+            e.preventDefault();
+            isRegisterMode = !isRegisterMode;
+            updateFormUI();
+        }
+
+        updateFormUI();
+
+        function generateUniqueId(usersList) {
+            let newId;
+            let exists = true;
+            while (exists) {
+                newId = Math.floor(100000000 + Math.random() * 900000000).toString();
+                if (newId !== "111111111" && !usersList.some(u => u.id === newId)) {
+                    exists = false;
+                }
+            }
+            return newId;
+        }
+
+        function handleAuth(event) {
+            event.preventDefault();
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value.trim();
+            let errorBox = document.getElementById("error-msg");
+            errorBox.innerText = "";
+
+            let users = JSON.parse(localStorage.getItem("gojo_users")) || [];
+
+            if (isRegisterMode) {
+                if (users.some(u => u.email === email)) {
+                    errorBox.innerText = "هذا البريد الإلكتروني مسجل مسبقاً!";
+                    return;
+                }
+
+                if (email === "gojoesultan1@gmail.com") {
+                    errorBox.innerText = "هذا البريد مخصص للمدير الأساسي فقط.";
+                    return;
+                }
+
+                let assignedId = generateUniqueId(users);
+                let newUser = { email, password, id: assignedId, downloads: [] };
+                users.push(newUser);
+                localStorage.setItem("gojo_users", JSON.stringify(users));
+
+                alert(`🎉 تم إنشاء الحساب بنجاح!\nمعرف الـ ID الخاص بك هو: ${assignedId}\n(احتفظ به جيداً ولا تشاركه مع أحد).`);
+                
+                localStorage.setItem("gojo_current_user", JSON.stringify(newUser));
+                window.location.href = "index.html";
+
+            } else {
+                let foundUser = users.find(u => u.email === email && u.password === password);
+
+                if (!foundUser) {
+                    errorBox.innerText = "البريد الإلكتروني أو كلمة المرور غير صحيحة!";
+                    return;
+                }
+
+                let browserToken = Math.random().toString(36).substring(2);
+                sessionStorage.setItem("browser_session_token", browserToken);
+                localStorage.setItem(`session_${foundUser.id}`, browserToken);
+
+                localStorage.setItem("gojo_current_user", JSON.stringify(foundUser));
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+</html>
