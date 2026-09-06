@@ -1,0 +1,213 @@
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #9333ea;
+    --bg-color: #0b0f19;
+    --card-bg: #1e293b;
+    --text-color: #f8fafc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#site-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #e2e8f0;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-login {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+}
+
+.btn-register {
+    background-color: white;
+    color: var(--primary-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex: 1;
+    width: 100%;
+}
+
+.content-section {
+    margin-bottom: 3rem;
+}
+
+.content-section h2 {
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.card, .video-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.card img, .video-card video {
+    width: 100%;
+    border-radius: 6px;
+    max-height: 250px;
+    object-fit: cover;
+}
+
+.video-container-custom {
+    position: relative;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.video-controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    background: #111;
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-controls-bar button, .video-controls-bar select {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.video-controls-bar button:hover {
+    background: var(--primary-color);
+}
+
+.btn-download {
+    background-color: #10b981;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    background-color: #020617;
+    margin-top: auto;
+    color: #64748b;
+}
+
+.admin-trigger-box {
+    margin-top: 15px;
+}
+
+.admin-btn {
+    background: #ef4444;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #475569;
+    background: #0f172a;
+    color: white;
+}
