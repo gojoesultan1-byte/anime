@@ -1,4 +1,4 @@
-// Gojo Esultan Full Engine v26.0
+// Gojo Esultan Full Engine v26.1 - Multiverse Edition
 const ADMIN_EMAIL = "gojoesultan1@gmail.com";
 const ADMIN_ID = "111111111";
 const ADMIN_PASS = "ahmedgojo1234567890";
@@ -33,12 +33,12 @@ if (!localStorage.getItem("gojo_posts") || JSON.parse(localStorage.getItem("gojo
         {
             id: Date.now(),
             title: "طاقة البعد الموازي",
-            desc: "تجربة عرض المحتوى والصور والفيديوهات.",
+            desc: "تجربة عرض المحتوى والصور والفيديوهات مع التفاعلات.",
             url: "https://i.imgur.com/8Km9tLL.png",
             section: "صور ومنشورات الأنمي",
             type: "image",
             likes: 15,
-            dislikes: 0,
+            dislikes: 2,
             views: 40
         }
     ];
@@ -96,7 +96,7 @@ function renderMultiverseContent() {
                 let mediaSrc = p.url || p.image || "https://i.imgur.com/8Km9tLL.png";
                 let mediaElement = "";
 
-                // التحقق من الفيديو ودعم زر ملء الشاشة (Fullscreen) والسرعة أوتوماتيك عبر controls المتصفح
+                // التحقق من الفيديو ودعم زر ملء الشاشة والسرعة عبر controls المتصفح
                 if (p.type === "video" || mediaSrc.includes("data:video") || mediaSrc.endsWith(".mp4")) {
                     mediaElement = `
                         <video src="${mediaSrc}" controls controlslist="nodownload" playsinline></video>
@@ -115,8 +115,9 @@ function renderMultiverseContent() {
                             <p>${p.desc || ''}</p>
                         </div>
                         <div class="quantum-stats">
-                            <span>✨ ${p.likes || 0}</span>
-                            <span>👁️ ${p.views || 0}</span>
+                            <span onclick="reactPost(${p.id}, 'like')" title="إعجاب">👍 ${p.likes || 0}</span>
+                            <span onclick="reactPost(${p.id}, 'dislike')" title="عدم إعجاب">👎 ${p.dislikes || 0}</span>
+                            <span title="المشاهدات">👁️ ${p.views || 0}</span>
                         </div>
                     </div>
                 `;
@@ -132,4 +133,18 @@ function renderMultiverseContent() {
             </div>
         `;
     });
+}
+
+function reactPost(postId, type) {
+    let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
+    let post = posts.find(p => p.id === postId);
+    if (post) {
+        if (type === 'like') {
+            post.likes = (post.likes || 0) + 1;
+        } else if (type === 'dislike') {
+            post.dislikes = (post.dislikes || 0) + 1;
+        }
+        localStorage.setItem("gojo_posts", JSON.stringify(posts));
+        renderMultiverseContent();
+    }
 }
