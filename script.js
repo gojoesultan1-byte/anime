@@ -1,76 +1,139 @@
-// Gojo Esultan Final Clean Engine
+// Gojo Esultan Robust Full Engine v10.0
 const ADMIN_EMAIL = "gojoesultan1@gmail.com";
 const ADMIN_ID = "111111111";
+const ADMIN_PASS = "ahmedgojo1234567890";
+const ADMIN_SECRET_PASS_CODE = "010079340866";
 
+// تهيئة البيانات الأساسية والتخزين المحلي
+if (!localStorage.getItem("gojo_users")) {
+    let adminUser = {
+        email: ADMIN_EMAIL,
+        password: ADMIN_PASS,
+        id: ADMIN_ID,
+        downloads: []
+    };
+    localStorage.setItem("gojo_users", JSON.stringify([adminUser]));
+}
+
+if (!localStorage.getItem("gojo_settings")) {
+    let defaultSettings = {
+        primaryColor: "#38bdf8",
+        secondaryColor: "#0f172a",
+        logoUrl: "https://i.imgur.com/8Km9tLL.png"
+    };
+    localStorage.setItem("gojo_settings", JSON.stringify(defaultSettings));
+}
+
+if (!localStorage.getItem("gojo_sections")) {
+    let defaultSections = ["صور ومنشورات الأنمي", "مشاهدة الأنمي"];
+    localStorage.setItem("gojo_sections", JSON.stringify(defaultSections));
+}
+
+// إضافة بيانات افتراضية لو كانت المنشورات فارغة تماماً
 if (!localStorage.getItem("gojo_posts") || JSON.parse(localStorage.getItem("gojo_posts")).length === 0) {
     let samplePosts = [
         {
-            title: "لقطة أسطورية",
-            desc: "تجربة عرض المحتوى بنجاح تام.",
+            id: Date.now(),
+            title: "لقطة أسطورية افتتاحية",
+            desc: "تم إنشاء هذا البوست تلقائياً للتأكد من عمل النظام.",
             url: "https://i.imgur.com/8Km9tLL.png",
-            section: "صور ومنشورات الأنمي"
+            section: "صور ومنشورات الأنمي",
+            type: "image",
+            likes: 12,
+            dislikes: 0,
+            views: 35
         }
     ];
     localStorage.setItem("gojo_posts", JSON.stringify(samplePosts));
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    // تنظيف أي حاوية قديمة متداخلة عشان مايعملش تكرار
-    let oldContainer = document.getElementById("gojo-master-container");
-    if (oldContainer) oldContainer.remove();
+    applySiteSettings();
+    injectTopAdminButton();
+    renderHomePageContent();
+});
 
-    // إنشاء حاوية أساسية واضحة ومباشرة
-    let container = document.createElement("div");
-    container.id = "gojo-master-container";
-    container.style.cssText = "width: 100%; padding: 20px; box-sizing: border-box; background: #0b0f19; margin-top: 20px; border-radius: 12px;";
+function applySiteSettings() {
+    let settings = JSON.parse(localStorage.getItem("gojo_settings"));
+    if (settings) {
+        if (settings.logoUrl) {
+            let logoImgs = document.querySelectorAll("#site-logo, .site-logo-element");
+            logoImgs.forEach(img => {
+                img.src = settings.logoUrl;
+            });
+        }
+        if (settings.primaryColor) {
+            document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
+        }
+    }
+}
 
-    let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
+function injectTopAdminButton() {
+    let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
+    let existingBtn = document.getElementById("absolute-admin-btn");
+    if (existingBtn) existingBtn.remove();
+
+    // إظهار زر لوحة التحكم الأحمر الصغير في أعلى الشاشة حصرياً للمدير
+    if (currentUser && currentUser.id === ADMIN_ID) {
+        let redBtn = document.createElement("a");
+        redBtn.id = "absolute-admin-btn";
+        redBtn.href = "admin.html";
+        redBtn.innerHTML = "🔴 لوحة التحكم";
+        redBtn.style.cssText = "position: fixed; top: 12px; left: 15px; background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; z-index: 99999; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.5);";
+        document.body.appendChild(redBtn);
+    }
+}
+
+function renderHomePageContent() {
+    let container = document.getElementById("main-content-container");
+    if (!container) return;
+
     let sections = JSON.parse(localStorage.getItem("gojo_sections")) || ["صور ومنشورات الأنمي", "مشاهدة الأنمي"];
+    let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
+    
+    container.innerHTML = "";
 
     sections.forEach(sec => {
         let secPosts = posts.filter(p => p.section === sec || (!p.section && sec === "صور ومنشورات الأنمي"));
-        let cardsHtml = "";
+        let postsHtml = "";
 
         if (secPosts.length === 0) {
-            cardsHtml = `<p style="color: #64748b; font-size: 0.9rem; padding: 10px;">لا توجد منشورات في هذا القسم حالياً.</p>`;
+            postsHtml = `<p style="color: #64748b; font-size: 0.9rem; padding: 10px;">لا توجد منشورات حالياً في هذا القسم.</p>`;
         } else {
             secPosts.forEach(p => {
                 let mediaSrc = p.url || p.image || "https://i.imgur.com/8Km9tLL.png";
-                cardsHtml += `
-                    <div style="background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 12px; width: 220px; display: inline-block; margin: 10px; vertical-align: top; box-shadow: 0 4px 6px rgba(0,0,0,0.4);">
-                        <img src="${mediaSrc}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px;" onerror="this.src='https://i.imgur.com/8Km9tLL.png'">
-                        <h4 style="color: white; margin: 10px 0 5px; font-size: 1rem;">${p.title || 'بدون عنوان'}</h4>
-                        <p style="color: #94a3b8; font-size: 0.85rem; margin: 0;">${p.desc || ''}</p>
+                let mediaElement = "";
+
+                if (p.type === "video" || mediaSrc.includes("data:video")) {
+                    mediaElement = `<video src="${mediaSrc}" controls></video>`;
+                } else {
+                    mediaElement = `<img src="${mediaSrc}" alt="${p.title || 'صورة'}" onerror="this.src='https://i.imgur.com/8Km9tLL.png'">`;
+                }
+
+                postsHtml += `
+                    <div class="anime-card">
+                        <div>
+                            ${mediaElement}
+                            <h4>${p.title || 'بدون عنوان'}</h4>
+                            <p>${p.desc || ''}</p>
+                        </div>
+                        <div class="card-stats">
+                            <span>👍 ${p.likes || 0}</span>
+                            <span>👎 ${p.dislikes || 0}</span>
+                            <span>👁️ ${p.views || 0}</span>
+                        </div>
                     </div>
                 `;
             });
         }
 
         container.innerHTML += `
-            <div style="margin-bottom: 25px;">
-                <h3 style="color: #38bdf8; border-bottom: 2px solid #38bdf8; padding-bottom: 6px; margin-bottom: 15px; font-size: 1.15rem;">📁 ${sec}</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    ${cardsHtml}
+            <div class="section-block">
+                <h3 class="section-title">📁 ${sec}</h3>
+                <div class="posts-grid">
+                    ${postsHtml}
                 </div>
             </div>
         `;
     });
-
-    // حقن الحاوية في الصفحة فوراً تحت الهيدر أو في الجسم
-    let target = document.querySelector(".content-area") || document.body;
-    target.appendChild(container);
-
-    // إضافة زر الأدمن الأحمر فوق لو المستخدم مدير
-    let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-    if (currentUser && currentUser.id === ADMIN_ID) {
-        let existingAdminBtn = document.getElementById("top-admin-red-btn");
-        if (!existingAdminBtn) {
-            let redBtn = document.createElement("a");
-            redBtn.id = "top-admin-red-btn";
-            redBtn.href = "admin.html";
-            redBtn.innerHTML = "🔴 لوحة التحكم";
-            redBtn.style.cssText = "position: fixed; top: 15px; left: 15px; background: #ef4444; color: white; padding: 8px 14px; border-radius: 8px; font-weight: bold; text-decoration: none; z-index: 99999; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 0.9rem;";
-            document.body.appendChild(redBtn);
-        }
-    }
-});
+}
