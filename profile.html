@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنزيلاتي - Gojo Esultan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo-container">
+            <img src="" alt="Logo" id="site-logo">
+            <h1><a href="index.html" style="color:white; text-decoration:none;">Gojo Esultan</a></h1>
+        </div>
+        <div id="auth-section"></div>
+    </header>
+
+    <div class="container">
+        <h2>📥 قائمة الفيديوهات التي قمت بتنزيلها للمشاهدة بدون نت</h2>
+        <div class="grid-container" id="downloads-grid"></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
+            if (!currentUser) {
+                alert("يجب تسجيل الدخول أولاً!");
+                window.location.href = "login.html";
+                return;
+            }
+
+            let dGrid = document.getElementById("downloads-grid");
+            if (!currentUser.downloads || currentUser.downloads.length === 0) {
+                dGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">ليس لديك أي فيديوهات منزلة حالياً. تصفح قسم مشاهدة الأنمي وقم بالتنزيل!</p>`;
+                return;
+            }
+
+            currentUser.downloads.forEach(post => {
+                dGrid.innerHTML += `
+                    <div class="video-card">
+                        <video controls preload="metadata">
+                            <source src="${post.url}" type="video/mp4">
+                        </video>
+                        <h3>${post.title} (محفوظ محلياً)</h3>
+                        <p>${post.desc}</p>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
