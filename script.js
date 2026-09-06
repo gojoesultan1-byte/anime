@@ -79,7 +79,7 @@ function checkUserSession() {
             `;
         }
 
-        if (currentUser.id === ADMIN_ID && currentUser.email === ADMIN_EMAIL) {
+        if (currentUser.id === ADMIN_ID) {
             if (adminTrigger) adminTrigger.style.display = "block";
         }
     }
