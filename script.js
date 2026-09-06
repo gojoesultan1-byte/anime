@@ -1,8 +1,10 @@
+// Gojo Esultan Full Engine
 const ADMIN_EMAIL = "gojoesultan1@gmail.com";
 const ADMIN_ID = "111111111";
 const ADMIN_PASS = "ahmedgojo1234567890";
 const ADMIN_SECRET_PASS_CODE = "010079340866";
 
+// Initial Setup
 if (!localStorage.getItem("gojo_users")) {
     let adminUser = {
         email: ADMIN_EMAIL,
@@ -14,273 +16,92 @@ if (!localStorage.getItem("gojo_users")) {
 }
 
 if (!localStorage.getItem("gojo_settings")) {
-    localStorage.setItem("gojo_settings", JSON.stringify({
-        primaryColor: "#4f46e5",
-        secondaryColor: "#9333ea",
-        logoUrl: "https://i.imgur.com/8Km9tLL.png"
-    }));
+    let defaultSettings = {
+        primaryColor: "#38bdf8",
+        secondaryColor: "#0f172a",
+        logoUrl: ""
+    };
+    localStorage.setItem("gojo_settings", JSON.stringify(defaultSettings));
 }
 
 if (!localStorage.getItem("gojo_sections")) {
-    localStorage.setItem("gojo_sections", JSON.stringify(["صور ومنشورات انمي", "مشاهدة الانمي"]));
+    let defaultSections = ["أحدث الأنميات", "أفلام الأنمي", "قائمة المفضلة"];
+    localStorage.setItem("gojo_sections", JSON.stringify(defaultSections));
 }
 
-if (!localStorage.getItem("gojo_posts")) {
-    localStorage.setItem("gojo_posts", JSON.stringify([
-        { id: 1, type: "image", title: "جوجو ساتورو الأسطوري", desc: "أقوى تعويذة في عالم الأنمي.", url: "https://i.imgur.com/8Km9tLL.png", section: "صور ومنشورات انمي", likes: 120, dislikes: 2, views: 450, likedBy: [], dislikedBy: [] },
-        { id: 2, type: "video", title: "حلقة قتال جوجو الخرافية", desc: "استمتع بأقوى جودة ودقة.", url: "https://www.w3schools.com/html/mov_bbb.mp4", section: "مشاهدة الانمي", likes: 340, dislikes: 5, views: 1200, likedBy: [], dislikedBy: [] }
-    ]));
-}
-
-document.addEventListener("DOMContentLoaded", () => {
+// Apply Settings on Load
+window.addEventListener("DOMContentLoaded", () => {
     applySiteSettings();
-    checkUserSession();
-    renderContent();
+    if (typeof loadHomeContent === "function") {
+        loadHomeContent();
+    }
+    checkAuthUI();
 });
 
 function applySiteSettings() {
     let settings = JSON.parse(localStorage.getItem("gojo_settings"));
     if (settings) {
-        document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
-        document.documentElement.style.setProperty('--secondary-color', settings.secondaryColor);
-        let logo = document.getElementById("site-logo");
-        if (logo) logo.src = settings.logoUrl;
+        if (settings.logoUrl) {
+            let logoImgs = document.querySelectorAll("#site-logo, .site-logo-element");
+            logoImgs.forEach(img => {
+                img.src = settings.logoUrl;
+            });
+        }
+        if (settings.primaryColor) {
+            document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
+        }
     }
 }
 
-function checkUserSession() {
+function checkAuthUI() {
     let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-    let authSection = document.getElementById("auth-section");
-    let adminTrigger = document.getElementById("admin-trigger-box");
-
-    if (currentUser) {
-        let activeToken = localStorage.getItem(`session_${currentUser.id}`);
-        let browserToken = sessionStorage.getItem("browser_session_token");
-
-        if (!browserToken) {
-            browserToken = Math.random().toString(36).substring(2);
-            sessionStorage.setItem("browser_session_token", browserToken);
-        }
-
-        if (activeToken && activeToken !== browserToken) {
-            alert("⚠️ تنبيه أمني: تم تسجيل الدخول بهذا الحساب من جهاز آخر! سيتم تسجيل خروجك.");
-            localStorage.removeItem("gojo_current_user");
-            window.location.href = "login.html";
-            return;
-        } else {
-            localStorage.setItem(`session_${currentUser.id}`, browserToken);
-        }
-
-        if (authSection) {
-            authSection.innerHTML = `
-                <span style="font-size: 0.9rem;">مرحباً (${currentUser.id})</span>
-                <a href="profile.html" class="btn btn-register">تنزيلاتي (${currentUser.downloads ? currentUser.downloads.length : 0})</a>
-                <button onclick="logout()" class="btn btn-login">خروج</button>
-            `;
-        }
-
-        if (currentUser.id === ADMIN_ID) {
-            if (adminTrigger) adminTrigger.style.display = "block";
-        }
+    let adminBtn = document.getElementById("admin-panel-btn");
+    if (currentUser && currentUser.id === "111111111") {
+        if (adminBtn) adminBtn.style.display = "block";
+    } else {
+        if (adminBtn) adminBtn.style.display = "none";
     }
 }
 
-function logout() {
-    let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-    if (currentUser) {
-        localStorage.removeItem(`session_${currentUser.id}`);
-    }
-    localStorage.removeItem("gojo_current_user");
-    window.location.href = "index.html";
-}
+function loadHomeContent() {
+    let container = document.getElementById("main-content-container");
+    if (!container) return;
 
-function renderContent() {
-    let postsGrid = document.getElementById("posts-grid");
-    let videosGrid = document.getElementById("videos-grid");
-    if (!postsGrid && !videosGrid) return;
-
+    let sections = JSON.parse(localStorage.getItem("gojo_sections")) || [];
     let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
-    let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-
-    if (postsGrid) postsGrid.innerHTML = "";
-    if (videosGrid) videosGrid.innerHTML = "";
-
-    posts.forEach(post => {
-        if (!post.likedBy) post.likedBy = [];
-        if (!post.dislikedBy) post.dislikedBy = [];
-        if (!post.views) post.views = 0;
-
-        let userHasLiked = currentUser && post.likedBy.includes(currentUser.id);
-        let userHasDisliked = currentUser && post.dislikedBy.includes(currentUser.id);
-
-        if (post.type === "image" && postsGrid) {
-            postsGrid.innerHTML += `
-                <div class="card">
-                    <img src="${post.url}" alt="${post.title}" onclick="incrementView(${post.id})">
-                    <h3>${post.title}</h3>
-                    <p>${post.desc}</p>
-                    <div class="interaction-bar" style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; border-top:1px solid #334155; padding-top:10px;">
-                        <div style="display:flex; gap:10px;">
-                            <button onclick="handleReaction(${post.id}, 'like')" style="background:${userHasLiked ? '#10b981' : '#334155'}; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">
-                                👍 ${post.likes || 0}
-                            </button>
-                            <button onclick="handleReaction(${post.id}, 'dislike')" style="background:${userHasDisliked ? '#ef4444' : '#334155'}; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">
-                                👎 ${post.dislikes || 0}
-                            </button>
-                        </div>
-                        <span style="font-size:0.85rem; color:#94a3b8;">👁️ ${post.views} مشاهدة</span>
-                    </div>
-                </div>
-            `;
-        } else if (post.type === "video" && videosGrid) {
-            videosGrid.innerHTML += `
-                <div class="video-card">
-                    <div class="video-container-custom">
-                        <video id="vid-${post.id}" preload="metadata" onplay="incrementView(${post.id})">
-                            <source src="${post.url}" type="video/mp4">
-                            متصفحك لا يدعم الفيديو.
-                        </video>
-                        <div class="video-controls-bar">
-                            <button onclick="togglePlay('vid-${post.id}')">تشغيل / إيقاف ⏯️</button>
-                            <button onclick="skipTime('vid-${post.id}', -15)">-15ث ⏪</button>
-                            <button onclick="skipTime('vid-${post.id}', 15)">+15ث ⏩</button>
-                            <select onchange="changeSpeed('vid-${post.id}', this.value)">
-                                <option value="0.5">0.5x</option>
-                                <option value="1" selected>1.0x (عادي)</option>
-                                <option value="1.5">1.5x</option>
-                                <option value="2">2.0x</option>
-                            </select>
-                            <select onchange="changeQuality('vid-${post.id}', this.value)">
-                                <option value="720">720p HD</option>
-                                <option value="480">480p</option>
-                                <option value="360">360p</option>
-                            </select>
-                        </div>
-                    </div>
-                    <h3>${post.title}</h3>
-                    <p>${post.desc}</p>
-                    
-                    <div class="interaction-bar" style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px solid #334155; padding-top:10px;">
-                        <div style="display:flex; gap:10px;">
-                            <button onclick="handleReaction(${post.id}, 'like')" style="background:${userHasLiked ? '#10b981' : '#334155'}; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">
-                                👍 ${post.likes || 0}
-                            </button>
-                            <button onclick="handleReaction(${post.id}, 'dislike')" style="background:${userHasDisliked ? '#ef4444' : '#334155'}; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">
-                                👎 ${post.dislikes || 0}
-                            </button>
-                        </div>
-                        <span style="font-size:0.85rem; color:#94a3b8;">👁️ ${post.views} مشاهدة</span>
-                    </div>
-
-                    <button class="btn btn-download" onclick="downloadVideo(${post.id})">📥 تنزيل الفيديو للمشاهدة بدون نت</button>
-                </div>
-            `;
-        }
-    });
-}
-
-function handleReaction(postId, type) {
-    let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-    if (!currentUser) {
-        alert("🔒 يجب تسجيل الدخول أو إنشاء حساب أولاً لكي تتمكن من التفاعل والإعجاب بالمنشورات!");
-        window.location.href = "login.html";
-        return;
-    }
-
-    let posts = JSON.parse(localStorage.getItem("gojo_posts"));
-    let post = posts.find(p => p.id === postId);
-    if (!post) return;
-
-    if (!post.likedBy) post.likedBy = [];
-    if (!post.dislikedBy) post.dislikedBy = [];
-
-    if (type === 'like') {
-        if (post.likedBy.includes(currentUser.id)) {
-            post.likedBy = post.likedBy.filter(id => id !== currentUser.id);
-            post.likes--;
-        } else {
-            post.likedBy.push(currentUser.id);
-            post.likes = (post.likes || 0) + 1;
-            if (post.dislikedBy.includes(currentUser.id)) {
-                post.dislikedBy = post.dislikedBy.filter(id => id !== currentUser.id);
-                post.dislikes = Math.max(0, (post.dislikes || 1) - 1);
-            }
-        }
-    } else if (type === 'dislike') {
-        if (post.dislikedBy.includes(currentUser.id)) {
-            post.dislikedBy = post.dislikedBy.filter(id => id !== currentUser.id);
-            post.dislikes--;
-        } else {
-            post.dislikedBy.push(currentUser.id);
-            post.dislikes = (post.dislikes || 0) + 1;
-            if (post.likedBy.includes(currentUser.id)) {
-                post.likedBy = post.likedBy.filter(id => id !== currentUser.id);
-                post.likes = Math.max(0, (post.likes || 1) - 1);
-            }
-        }
-    }
-
-    localStorage.setItem("gojo_posts", JSON.stringify(posts));
-    renderContent();
-}
-
-function incrementView(postId) {
-    let posts = JSON.parse(localStorage.getItem("gojo_posts"));
-    let post = posts.find(p => p.id === postId);
-    if (post) {
-        post.views = (post.views || 0) + 1;
-        localStorage.setItem("gojo_posts", JSON.stringify(posts));
-    }
-}
-
-function togglePlay(id) {
-    let v = document.getElementById(id);
-    if (v.paused) v.play();
-    else v.pause();
-}
-
-function skipTime(id, seconds) {
-    let v = document.getElementById(id);
-    v.currentTime += seconds;
-}
-
-function changeSpeed(id, speed) {
-    let v = document.getElementById(id);
-    v.playbackRate = parseFloat(speed);
-}
-
-function changeQuality(id, q) {
-    alert(`تم تحويل دقة التشغيل إلى ${q}p بنجاح`);
-}
-
-function downloadVideo(postId) {
-    let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-    if (!currentUser) {
-        alert("🔒 عذراً يا صديقي! يجب تسجيل الدخول أو إنشاء حساب أولاً لكي تتمكن من تنزيل الفيديوهات ومتابعتها بدون إنترنت.");
-        window.location.href = "login.html";
-        return;
-    }
-
-    let posts = JSON.parse(localStorage.getItem("gojo_posts"));
-    let targetPost = posts.find(p => p.id === postId);
-
-    if (!currentUser.downloads) currentUser.downloads = [];
     
-    if (currentUser.downloads.some(d => d.id === postId)) {
-        alert("هذا الفيديو موجود بالفعل في قائمة تنزيلاتك الخاصة!");
-        return;
-    }
+    container.innerHTML = "";
 
-    currentUser.downloads.push(targetPost);
-    localStorage.setItem("gojo_current_user", JSON.stringify(currentUser));
+    sections.forEach(sec => {
+        let secPosts = posts.filter(p => p.section === sec);
+        let postsHtml = "";
 
-    let users = JSON.parse(localStorage.getItem("gojo_users"));
-    let uIndex = users.findIndex(u => u.id === currentUser.id);
-    if (uIndex !== -1) {
-        users[uIndex] = currentUser;
-        localStorage.setItem("gojo_users", JSON.stringify(users));
-    }
+        if (secPosts.length === 0) {
+            postsHtml = `<p style="color: #94a3b8; padding: 10px;">لا توجد منشورات في هذا القسم حالياً.</p>`;
+        } else {
+            secPosts.forEach(p => {
+                postsHtml += `
+                    <div class="anime-card" style="background: #1e293b; border-radius: 8px; padding: 15px; width: 220px; display: inline-block; margin: 10px; vertical-align: top;">
+                        <img src="${p.url}" alt="${p.title}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px;">
+                        <h4 style="margin: 10px 0 5px; color: white;">${p.title}</h4>
+                        <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px;">${p.desc}</p>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #38bdf8;">
+                            <span>👍 ${p.likes || 0}</span>
+                            <span>👎 ${p.dislikes || 0}</span>
+                            <span>👁️ ${p.views || 0}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
-    alert("📥 تم تنزيل الفيديو بنجاح إلى ملفاتك الشخصية! يمكنك مشاهدته بدون إنترنت من صفحة (تنزيلاتي).");
-    checkUserSession();
+        container.innerHTML += `
+            <div class="section-block" style="margin-bottom: 30px;">
+                <h2 style="border-bottom: 2px solid #38bdf8; padding-bottom: 5px; margin-bottom: 15px; color: #f8fafc;">📁 ${sec}</h2>
+                <div class="section-posts-grid" style="display: flex; flex-wrap: wrap; gap: 15px;">
+                    ${postsHtml}
+                </div>
+            </div>
+        `;
+    });
 }
