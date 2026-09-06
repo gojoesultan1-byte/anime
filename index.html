@@ -151,10 +151,20 @@
         .quantum-stats {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
+            align-items: center;
+            font-size: 0.85rem;
             color: var(--neon-blue);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 8px;
+        }
+
+        .quantum-stats span {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .quantum-stats span:hover {
+            transform: scale(1.1);
         }
 
         .cosmic-admin-btn {
