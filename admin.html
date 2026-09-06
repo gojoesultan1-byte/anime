@@ -3,285 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم السلطان - Gojo Esultan</title>
-    <link rel="stylesheet" href="style.css">
+    <title>مركز التحكم  - Gojo Esultan</title>
+    <style>
+        :root {
+            --cosmic-bg: #030014;
+            --portal-purple: #7928ca;
+            --neon-blue: #00dfd8;
+            --text-main: #f3f4f6;
+        }
+        body {
+            background-color: var(--cosmic-bg);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .admin-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: rgba(13, 10, 35, 0.85);
+            border: 1px solid rgba(0, 223, 216, 0.4);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        h2 {
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(121, 40, 202, 0.5);
+            border-radius: 8px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        button {
+            background: linear-gradient(135deg, var(--neon-blue), var(--portal-purple));
+            color: #030014;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.02);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
 
-    <div id="password-gate" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(11,15,25,0.95); display:flex; justify-content:center; align-items:center; z-index:9999;">
-        <div class="form-container" style="text-align:center;">
-            <h2>🔒 منطقة سرية للمدير فقط</h2>
-            <p style="margin: 10px 0; color: #94a3b8;">الرجاء إدخال الباسورد السري:</p>
-            <input type="password" id="secret-pass-input" placeholder="أدخل باسورد الزر السري" style="margin-bottom: 15px; text-align:center;">
-            <button onclick="verifyAdminSecret()" class="btn btn-register" style="width: 100%;">فتح لوحة التحكم</button>
-            <br><br>
-            <a href="index.html" style="color: #94a3b8; text-decoration:none;">العودة للرئيسية</a>
-        </div>
-    </div>
-
-    <header class="main-header">
-        <div class="logo-container">
-            <img src="" alt="Logo" id="site-logo">
-            <h1>لوحة تحكم السلطان (Admin Panel)</h1>
-        </div>
-        <a href="index.html" class="btn btn-login">العودة للموقع</a>
-    </header>
-
-    <div class="container" id="admin-content" style="display:none;">
+    <div class="admin-container">
+        <a href="index.html" class="back-link">← العودة للرئيسية الكونية</a>
         
-        <section class="card" style="margin-bottom: 2rem;">
-            <h3>🎨 تخصيص الهوية واللوجو والألوان</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-                <div class="form-group">
-                    <label>اللون الرئيسي للموقع:</label>
-                    <input type="color" id="primary-color-picker" style="height: 45px; cursor:pointer;">
-                </div>
-                <div class="form-group">
-                    <label>اللون الثانوي:</label>
-                    <input type="color" id="secondary-color-picker" style="height: 45px; cursor:pointer;">
-                </div>
+        <!-- قسم تسجيل الدخول لو مش مسجل -->
+        <div id="admin-auth-box">
+            <h2>تسجيل دخول المسؤول الكوني</h2>
+            <div class="form-group">
+                <label>البريد الإلكتروني للإدارة:</label>
+                <input type="email" id="admin-email" placeholder="gojoesultan1@gmail.com">
             </div>
             <div class="form-group">
-                <label>رفع لوجو الموقع الجديد (اضغط لاختيار صورة):</label>
-                <div onclick="document.getElementById('logo-file-input').click()" style="border: 2px dashed #475569; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; background: #0f172a;">
-                    <span style="font-size: 2rem; display: block; color: #38bdf8;">+</span>
-                    <span id="logo-file-label" style="color: #94a3b8; font-size: 0.9rem;">اضغط هنا لاختيار صورة اللوجو من الآيباد</span>
-                </div>
-                <input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
+                <label>كلمة المرور:</label>
+                <input type="password" id="admin-pass" placeholder="كلمة المرور">
             </div>
-            <button onclick="saveSiteCustomization()" class="btn btn-register">حفظ التعديلات الجمالية</button>
-        </section>
+            <button onclick="loginAdmin()">دخول البعد</button>
+        </div>
 
-        <section class="card" style="margin-bottom: 2rem;">
-            <h3>📁 إدارة الأقسام</h3>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <input type="text" id="new-section-name" placeholder="اسم القسم الجديد" style="flex:1; padding: 10px; background:#0f172a; border:1px solid #475569; color:white; border-radius:6px;">
-                <button onclick="addSection()" class="btn btn-register">إضافة قسم +</button>
+        <!-- لوحة التحكم الفعلية بعد الدخول -->
+        <div id="admin-dashboard-box" style="display:none;">
+            <h2>نشر محتوى جديد (صور / فيديوهات الأيباد)</h2>
+            <div class="form-group">
+                <label>عنوان المنشور:</label>
+                <input type="text" id="post-title" placeholder="أدخل العنوان...">
             </div>
-            <div id="sections-list-box" style="margin-top: 15px; display:flex; gap: 10px; flex-wrap:wrap;"></div>
-        </section>
-
-        <section class="card" style="margin-bottom: 2rem;">
-            <h3>➕ إضافة محتوى جديد (رفع مباشر بالـ +)</h3>
-            <form onsubmit="addNewPost(event)" style="margin-top: 15px;">
-                <div class="form-group">
-                    <label>نوع المحتوى:</label>
-                    <select id="post-type" style="width:100%; padding:10px; background:#0f172a; color:white; border-radius:6px; border:1px solid #475569;">
-                        <option value="image">صورة ومنشور</option>
-                        <option value="video">فيديو / حلقة أنمي</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>اختر القسم:</label>
-                    <select id="post-section-target" style="width:100%; padding:10px; background:#0f172a; color:white; border-radius:6px; border:1px solid #475569;"></select>
-                </div>
-                <div class="form-group">
-                    <label>العنوان:</label>
-                    <input type="text" id="post-title" required placeholder="عنوان المنشور أو الحلقة">
-                </div>
-                <div class="form-group">
-                    <label>الوصف:</label>
-                    <input type="text" id="post-desc" required placeholder="وصف تفصيلي">
-                </div>
-                <div class="form-group">
-                    <label>صورة المنشور أو الغلاف (مربع الرفع):</label>
-                    <div onclick="document.getElementById('post-file-input').click()" style="border: 2px dashed #475569; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; background: #0f172a;">
-                        <span style="font-size: 2rem; display: block; color: #38bdf8;">+</span>
-                        <span id="post-file-label" style="color: #94a3b8; font-size: 0.9rem;">اضغط لاختيار صورة البوست من الآيباد</span>
-                    </div>
-                    <input type="file" id="post-file-input" accept="image/*" style="display:none;" onchange="handlePostImageUpload(this)">
-                </div>
-                <button type="submit" class="btn btn-register" style="width: 100%;">نشر المحتوى فوراً 🚀</button>
-            </form>
-        </section>
-
-        <section class="card">
-            <h3>⚙️ التحكم اليدوي في الإيكات والمشاهدات</h3>
-            <div id="admin-stats-list" style="display: flex; flex-direction: column; gap: 15px;"></div>
-        </section>
-
+            <div class="form-group">
+                <label>وصف المنشور:</label>
+                <textarea id="post-desc" placeholder="اكتب الوصف هنا..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>اختر القسم الكوني:</label>
+                <select id="post-section">
+                    <option value="صور ومنشورات الأنمي">صور ومنشورات الأنمي</option>
+                    <option value="مشاهدة الأنمي">مشاهدة الأنمي</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>اختر ملف الوسائط (صورة أو فيديو من الأيباد):</label>
+                <input type="file" id="post-file-input" accept="image/*,video/*">
+            </div>
+            <button onclick="publishPost()">نشر في البعد فوراً 🚀</button>
+        </div>
     </div>
 
-    <script src="script.js"></script>
-    <script>
-        let tempLogoData = "";
-        let tempPostImageData = "";
-
-        document.addEventListener("DOMContentLoaded", () => {
-            let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-            if (!currentUser || currentUser.id !== "111111111") {
-                alert("⛔ منطقة محظورة!");
-                window.location.href = "index.html";
-            }
-        });
-
-        function verifyAdminSecret() {
-            let val = document.getElementById("secret-pass-input").value.trim();
-            if (val === "010079340866") {
-                document.getElementById("password-gate").style.display = "none";
-                document.getElementById("admin-content").style.display = "block";
-                loadAdminData();
-            } else {
-                alert("❌ الباسورد السري غير صحيح!");
-            }
-        }
-
-        function loadAdminData() {
-            let settings = JSON.parse(localStorage.getItem("gojo_settings"));
-            if (settings) {
-                document.getElementById("primary-color-picker").value = settings.primaryColor || "#38bdf8";
-                document.getElementById("secondary-color-picker").value = settings.secondaryColor || "#0f172a";
-                tempLogoData = settings.logoUrl || "";
-                if(tempLogoData) {
-                    document.getElementById("logo-file-label").innerText = "✅ تم رفع صورة اللوجو بنجاح";
-                }
-            }
-            renderAdminSections();
-            renderAdminPostsList();
-        }
-
-        function handleLogoUpload(input) {
-            if (input.files && input.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    tempLogoData = e.target.result;
-                    document.getElementById("logo-file-label").innerText = "✅ تم اختيار صورة اللوجو بنجاح: " + input.files[0].name;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function handlePostImageUpload(input) {
-            if (input.files && input.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    tempPostImageData = e.target.result;
-                    document.getElementById("post-file-label").innerText = "✅ تم اختيار صورة البوست بنجاح: " + input.files[0].name;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function saveSiteCustomization() {
-            let pColor = document.getElementById("primary-color-picker").value;
-            let sColor = document.getElementById("secondary-color-picker").value;
-            let settings = { primaryColor: pColor, secondaryColor: sColor, logoUrl: tempLogoData };
-            localStorage.setItem("gojo_settings", JSON.stringify(settings));
-            alert("✨ تم حفظ الهوية واللوجو بنجاح!");
-            if(typeof applySiteSettings === "function") applySiteSettings();
-        }
-
-        function renderAdminSections() {
-            let sections = JSON.parse(localStorage.getItem("gojo_sections")) || [];
-            let box = document.getElementById("sections-list-box");
-            let targetSelect = document.getElementById("post-section-target");
-            box.innerHTML = "";
-            targetSelect.innerHTML = "";
-            sections.forEach((sec, idx) => {
-                box.innerHTML += `<span style="background:#334155; padding: 5px 10px; border-radius:4px; display:inline-flex; align-items:center; gap:8px;">${sec} <button onclick="deleteSection(${idx})" style="background:#ef4444; color:white; border:none; padding:2px 6px; border-radius:3px; cursor:pointer;">حذف</button></span>`;
-                targetSelect.innerHTML += `<option value="${sec}">${sec}</option>`;
-            });
-        }
-
-        function addSection() {
-            let name = document.getElementById("new-section-name").value.trim();
-            if (!name) return;
-            let sections = JSON.parse(localStorage.getItem("gojo_sections")) || [];
-            if (!sections.includes(name)) {
-                sections.push(name);
-                localStorage.setItem("gojo_sections", JSON.stringify(sections));
-                document.getElementById("new-section-name").value = "";
-                renderAdminSections();
-            }
-        }
-
-        function deleteSection(idx) {
-            let sections = JSON.parse(localStorage.getItem("gojo_sections")) || [];
-            sections.splice(idx, 1);
-            localStorage.setItem("gojo_sections", JSON.stringify(sections));
-            renderAdminSections();
-        }
-
-        function addNewPost(e) {
-            e.preventDefault();
-            if (!tempPostImageData) {
-                alert("الرجاء اختيار صورة للبوست عبر مربع الـ + أولاً!");
-                return;
-            }
-            let type = document.getElementById("post-type").value;
-            let section = document.getElementById("post-section-target").value;
-            let title = document.getElementById("post-title").value.trim();
-            let desc = document.getElementById("post-desc").value.trim();
-
-            let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
-            let newPost = { 
-                id: Date.now(), 
-                type, 
-                section, 
-                title, 
-                desc, 
-                url: tempPostImageData, 
-                likes: 0, 
-                dislikes: 0, 
-                views: 0, 
-                likedBy: [], 
-                dislikedBy: [] 
-            };
-            posts.push(newPost);
-            localStorage.setItem("gojo_posts", JSON.stringify(posts));
-
-            alert("✅ تم نشر المحتوى بنجاح في الموقع مع الصورة المرفوعة!");
-            e.target.reset();
-            tempPostImageData = "";
-            document.getElementById("post-file-label").innerText = "اضغط لاختيار صورة البوست من الآيباد";
-            renderAdminPostsList();
-        }
-
-        function renderAdminPostsList() {
-            let list = document.getElementById("admin-stats-list");
-            let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
-            list.innerHTML = "";
-            if (posts.length === 0) {
-                list.innerHTML = "<p>لا توجد منشورات حالياً.</p>";
-                return;
-            }
-            posts.forEach(p => {
-                list.innerHTML += `
-                    <div style="background: #0f172a; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong>${p.title}</strong>
-                            <button onclick="deletePost(${p.id})" class="btn" style="background: #ef4444; color:white; padding: 5px 10px; font-size:0.8rem;">حذف</button>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                            <div><label style="font-size:0.75rem;">الإيكات:</label><input type="number" id="likes-${p.id}" value="${p.likes || 0}" style="width:100%; background:#1e293b; color:white; border:1px solid #475569; padding:4px;"></div>
-                            <div><label style="font-size:0.75rem;">الديسلايكات:</label><input type="number" id="dislikes-${p.id}" value="${p.dislikes || 0}" style="width:100%; background:#1e293b; color:white; border:1px solid #475569; padding:4px;"></div>
-                            <div><label style="font-size:0.75rem;">المشاهدات:</label><input type="number" id="views-${p.id}" value="${p.views || 0}" style="width:100%; background:#1e293b; color:white; border:1px solid #475569; padding:4px;"></div>
-                        </div>
-                        <button onclick="updatePostStats(${p.id})" class="btn btn-register" style="padding: 4px; font-size:0.8rem;">حفظ الإحصائيات</button>
-                    </div>
-                `;
-            });
-        }
-
-        function updatePostStats(id) {
-            let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
-            let p = posts.find(item => item.id === id);
-            if (p) {
-                p.likes = parseInt(document.getElementById(`likes-${id}`).value) || 0;
-                p.dislikes = parseInt(document.getElementById(`dislikes-${id}`).value) || 0;
-                p.views = parseInt(document.getElementById(`views-${id}`).value) || 0;
-                localStorage.setItem("gojo_posts", JSON.stringify(posts));
-                alert("✨ تم التحديث بنجاح!");
-                renderAdminPostsList();
-            }
-        }
-
-        function deletePost(id) {
-            let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
-            posts = posts.filter(p => p.id !== id);
-            localStorage.setItem("gojo_posts", JSON.stringify(posts));
-            renderAdminPostsList();
-        }
-    </script>
+    <script src="admin.js"></script>
 </body>
 </html>
