@@ -1,10 +1,10 @@
-// Gojo Esultan Robust Full Engine v10.0
+// Gojo Esultan Quantum Multiverse Engine v20.26
 const ADMIN_EMAIL = "gojoesultan1@gmail.com";
 const ADMIN_ID = "111111111";
 const ADMIN_PASS = "ahmedgojo1234567890";
 const ADMIN_SECRET_PASS_CODE = "010079340866";
 
-// تهيئة البيانات الأساسية والتخزين المحلي
+// تفعيل بيانات النظام الكوني إذا كانت فارغة
 if (!localStorage.getItem("gojo_users")) {
     let adminUser = {
         email: ADMIN_EMAIL,
@@ -17,8 +17,8 @@ if (!localStorage.getItem("gojo_users")) {
 
 if (!localStorage.getItem("gojo_settings")) {
     let defaultSettings = {
-        primaryColor: "#38bdf8",
-        secondaryColor: "#0f172a",
+        primaryColor: "#00dfd8",
+        secondaryColor: "#030014",
         logoUrl: "https://i.imgur.com/8Km9tLL.png"
     };
     localStorage.setItem("gojo_settings", JSON.stringify(defaultSettings));
@@ -29,63 +29,58 @@ if (!localStorage.getItem("gojo_sections")) {
     localStorage.setItem("gojo_sections", JSON.stringify(defaultSections));
 }
 
-// إضافة بيانات افتراضية لو كانت المنشورات فارغة تماماً
+// بوستات أبعاد كونية تجريبية تظهر فوراً لو لم ترفع شيئاً بعد
 if (!localStorage.getItem("gojo_posts") || JSON.parse(localStorage.getItem("gojo_posts")).length === 0) {
     let samplePosts = [
         {
             id: Date.now(),
-            title: "لقطة أسطورية افتتاحية",
-            desc: "تم إنشاء هذا البوست تلقائياً للتأكد من عمل النظام.",
+            title: "طاقة البعد الموازي",
+            desc: "أول إشارة رصدت من العوالم الفضائية الموازية.",
             url: "https://i.imgur.com/8Km9tLL.png",
             section: "صور ومنشورات الأنمي",
             type: "image",
-            likes: 12,
+            likes: 42,
             dislikes: 0,
-            views: 35
+            views: 133
         }
     ];
     localStorage.setItem("gojo_posts", JSON.stringify(samplePosts));
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    applySiteSettings();
-    injectTopAdminButton();
-    renderHomePageContent();
+    applyCosmicSettings();
+    renderCosmicAdminButton();
+    renderMultiverseContent();
 });
 
-function applySiteSettings() {
+function applyCosmicSettings() {
     let settings = JSON.parse(localStorage.getItem("gojo_settings"));
-    if (settings) {
-        if (settings.logoUrl) {
-            let logoImgs = document.querySelectorAll("#site-logo, .site-logo-element");
-            logoImgs.forEach(img => {
-                img.src = settings.logoUrl;
-            });
-        }
-        if (settings.primaryColor) {
-            document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
-        }
+    if (settings && settings.logoUrl) {
+        let logoImgs = document.querySelectorAll("#site-logo, .portal-brand img");
+        logoImgs.forEach(img => {
+            img.src = settings.logoUrl;
+        });
     }
 }
 
-function injectTopAdminButton() {
+function renderCosmicAdminButton() {
     let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-    let existingBtn = document.getElementById("absolute-admin-btn");
+    let existingBtn = document.getElementById("cosmic-admin-red-btn");
     if (existingBtn) existingBtn.remove();
 
-    // إظهار زر لوحة التحكم الأحمر الصغير في أعلى الشاشة حصرياً للمدير
+    // إظهار زر لوحة التحكم الفضائي الأحمر حصرياً للأدمن
     if (currentUser && currentUser.id === ADMIN_ID) {
         let redBtn = document.createElement("a");
-        redBtn.id = "absolute-admin-btn";
+        redBtn.id = "cosmic-admin-red-btn";
         redBtn.href = "admin.html";
-        redBtn.innerHTML = "🔴 لوحة التحكم";
-        redBtn.style.cssText = "position: fixed; top: 12px; left: 15px; background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; z-index: 99999; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.5);";
+        redBtn.innerHTML = "🔴 لوحة تحكم البعد";
+        redBtn.className = "cosmic-admin-btn";
         document.body.appendChild(redBtn);
     }
 }
 
-function renderHomePageContent() {
-    let container = document.getElementById("main-content-container");
+function renderMultiverseContent() {
+    let container = document.getElementById("cosmic-content-container");
     if (!container) return;
 
     let sections = JSON.parse(localStorage.getItem("gojo_sections")) || ["صور ومنشورات الأنمي", "مشاهدة الأنمي"];
@@ -95,10 +90,10 @@ function renderHomePageContent() {
 
     sections.forEach(sec => {
         let secPosts = posts.filter(p => p.section === sec || (!p.section && sec === "صور ومنشورات الأنمي"));
-        let postsHtml = "";
+        let cardsHtml = "";
 
         if (secPosts.length === 0) {
-            postsHtml = `<p style="color: #64748b; font-size: 0.9rem; padding: 10px;">لا توجد منشورات حالياً في هذا القسم.</p>`;
+            cardsHtml = `<p style="color: #6b7280; font-size: 0.9rem; padding: 10px;">لا توجد طاقة مسجلة في هذا البعد حالياً.</p>`;
         } else {
             secPosts.forEach(p => {
                 let mediaSrc = p.url || p.image || "https://i.imgur.com/8Km9tLL.png";
@@ -107,19 +102,19 @@ function renderHomePageContent() {
                 if (p.type === "video" || mediaSrc.includes("data:video")) {
                     mediaElement = `<video src="${mediaSrc}" controls></video>`;
                 } else {
-                    mediaElement = `<img src="${mediaSrc}" alt="${p.title || 'صورة'}" onerror="this.src='https://i.imgur.com/8Km9tLL.png'">`;
+                    mediaElement = `<img src="${mediaSrc}" alt="${p.title || 'كون'}" onerror="this.src='https://i.imgur.com/8Km9tLL.png'">`;
                 }
 
-                postsHtml += `
-                    <div class="anime-card">
+                cardsHtml += `
+                    <div class="quantum-card">
                         <div>
                             ${mediaElement}
-                            <h4>${p.title || 'بدون عنوان'}</h4>
+                            <h4>${p.title || 'إشارة مجهولة'}</h4>
                             <p>${p.desc || ''}</p>
                         </div>
-                        <div class="card-stats">
-                            <span>👍 ${p.likes || 0}</span>
-                            <span>👎 ${p.dislikes || 0}</span>
+                        <div class="quantum-stats">
+                            <span>✨ ${p.likes || 0}</span>
+                            <span>🌀 ${p.dislikes || 0}</span>
                             <span>👁️ ${p.views || 0}</span>
                         </div>
                     </div>
@@ -128,10 +123,10 @@ function renderHomePageContent() {
         }
 
         container.innerHTML += `
-            <div class="section-block">
-                <h3 class="section-title">📁 ${sec}</h3>
-                <div class="posts-grid">
-                    ${postsHtml}
+            <div class="dimension-section">
+                <h3 class="dimension-title">🌌 ${sec}</h3>
+                <div class="galaxy-grid">
+                    ${cardsHtml}
                 </div>
             </div>
         `;
