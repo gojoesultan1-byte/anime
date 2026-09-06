@@ -3,49 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gojo Esultan | السلطان جوجو</title>
+    <title>Gojo Esultan - منصة الأنمي والمنشورات</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* تنسيقات أساسية مضمونة لمنع أي تداخل أو اختفاء للمحتوى */
+        body {
+            background-color: #0b0f19;
+            color: #f8fafc;
+            font-family: Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: #0f172a;
+            border-bottom: 2px solid #1e293b;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-container img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-menu a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .nav-menu a:hover {
+            color: #38bdf8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .section-block {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            color: #38bdf8;
+            border-bottom: 2px solid #38bdf8;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        .posts-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .anime-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px;
+            width: 220px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .anime-card img, .anime-card video {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: black;
+        }
+        .anime-card h4 {
+            color: white;
+            margin: 10px 0 5px;
+            font-size: 1rem;
+        }
+        .anime-card p {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin: 0 0 10px;
+        }
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #38bdf8;
+            border-top: 1px solid #334155;
+            padding-top: 8px;
+        }
+    </style>
 </head>
 <body>
 
     <header class="main-header">
         <div class="logo-container">
-            <img src="" alt="Gojo Logo" id="site-logo">
-            <h1>Gojo Esultan</h1>
+            <img id="site-logo" src="https://i.imgur.com/8Km9tLL.png" alt="Gojo Logo">
+            <h1 style="font-size: 1.4rem; margin:0;">Gojo Esultan</h1>
         </div>
-        
-        <nav class="nav-links">
-            <a href="index.html">الرئيسية</a>
-            <a href="#anime-posts">صور ومنشورات الأنمي</a>
-            <a href="#anime-watch">مشاهدة الأنمي</a>
-        </nav>
-
-        <div class="auth-buttons" id="auth-section">
-            <a href="login.html" class="btn btn-login">تسجيل الدخول</a>
-            <a href="login.html?mode=register" class="btn btn-register">إنشاء حساب</a>
-        </div>
+        <ul class="nav-menu">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="admin.html">لوحة التحكم</a></li>
+        </ul>
     </header>
 
-    <main class="container">
-        
-        <section id="anime-posts" class="content-section">
-            <h2>📸 صور ومنشورات الأنمي</h2>
-            <div class="grid-container" id="posts-grid"></div>
-        </section>
-
-        <section id="anime-watch" class="content-section">
-            <h2>🎬 مشاهدة الأنمي</h2>
-            <div class="grid-container" id="videos-grid"></div>
-        </section>
-
-    </main>
-
-    <footer>
-        <p>جميع حقوق الملكية محفوظة &copy; 2026 Gojo Esultan</p>
-        <div id="admin-trigger-box" class="admin-trigger-box" style="display:none;">
-            <a href="admin.html" class="admin-btn">👑 لوحة تحكم السلطان (خاصة بالمدير)</a>
-        </div>
-    </footer>
+    <!-- الحاوية الرئيسية التي سيتم حقن المحتوى والصور تحت الخطوط فيها بانتظام -->
+    <div class="container" id="main-content-container">
+        <!-- يتم تعبئة المحتوى ديناميكياً من ملف الـ JavaScript -->
+    </div>
 
     <script src="script.js"></script>
 </body>
