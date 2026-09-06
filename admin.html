@@ -128,11 +128,13 @@
 
         function loadAdminData() {
             let settings = JSON.parse(localStorage.getItem("gojo_settings"));
-            document.getElementById("primary-color-picker").value = settings.primaryColor;
-            document.getElementById("secondary-color-picker").value = settings.secondaryColor;
-            tempLogoData = settings.logoUrl;
-            if(tempLogoData) {
-                document.getElementById("logo-file-label").innerText = "✅ تم رفع صورة اللوجو بنجاح";
+            if (settings) {
+                document.getElementById("primary-color-picker").value = settings.primaryColor || "#38bdf8";
+                document.getElementById("secondary-color-picker").value = settings.secondaryColor || "#0f172a";
+                tempLogoData = settings.logoUrl || "";
+                if(tempLogoData) {
+                    document.getElementById("logo-file-label").innerText = "✅ تم رفع صورة اللوجو بنجاح";
+                }
             }
             renderAdminSections();
             renderAdminPostsList();
@@ -166,7 +168,7 @@
             let settings = { primaryColor: pColor, secondaryColor: sColor, logoUrl: tempLogoData };
             localStorage.setItem("gojo_settings", JSON.stringify(settings));
             alert("✨ تم حفظ الهوية واللوجو بنجاح!");
-            applySiteSettings();
+            if(typeof applySiteSettings === "function") applySiteSettings();
         }
 
         function renderAdminSections() {
