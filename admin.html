@@ -11,7 +11,7 @@
     <div id="password-gate" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(11,15,25,0.95); display:flex; justify-content:center; align-items:center; z-index:9999;">
         <div class="form-container" style="text-align:center;">
             <h2>🔒 منطقة سرية للمدير فقط</h2>
-            <p style="margin: 10px 0; color: #94a3b8;">الرجاء إدخال الباسورد السري المكون من الأرقام:</p>
+            <p style="margin: 10px 0; color: #94a3b8;">الرجاء إدخال الباسورد السري:</p>
             <input type="password" id="secret-pass-input" placeholder="أدخل باسورد الزر السري" style="margin-bottom: 15px; text-align:center;">
             <button onclick="verifyAdminSecret()" class="btn btn-register" style="width: 100%;">فتح لوحة التحكم</button>
             <br><br>
@@ -42,8 +42,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>رابط اللوجو الجديد:</label>
-                <input type="text" id="logo-url-input" placeholder="ضع رابط الصورة هنا">
+                <label>رفع لوجو الموقع الجديد (اضغط لاختيار صورة):</label>
+                <div onclick="document.getElementById('logo-file-input').click()" style="border: 2px dashed #475569; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; background: #0f172a;">
+                    <span style="font-size: 2rem; display: block; color: #38bdf8;">+</span>
+                    <span id="logo-file-label" style="color: #94a3b8; font-size: 0.9rem;">اضغط هنا لاختيار صورة اللوجو من الآيباد</span>
+                </div>
+                <input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
             </div>
             <button onclick="saveSiteCustomization()" class="btn btn-register">حفظ التعديلات الجمالية</button>
         </section>
@@ -58,13 +62,13 @@
         </section>
 
         <section class="card" style="margin-bottom: 2rem;">
-            <h3>➕ إضافة محتوى جديد (صورة أو فيديو)</h3>
+            <h3>➕ إضافة محتوى جديد (رفع مباشر بالـ +)</h3>
             <form onsubmit="addNewPost(event)" style="margin-top: 15px;">
                 <div class="form-group">
                     <label>نوع المحتوى:</label>
                     <select id="post-type" style="width:100%; padding:10px; background:#0f172a; color:white; border-radius:6px; border:1px solid #475569;">
                         <option value="image">صورة ومنشور</option>
-                        <option value="video">فيديو (مشاهدة الأنمي)</option>
+                        <option value="video">فيديو / حلقة أنمي</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -80,16 +84,19 @@
                     <input type="text" id="post-desc" required placeholder="وصف تفصيلي">
                 </div>
                 <div class="form-group">
-                    <label>رابط الصورة أو الفيديو:</label>
-                    <input type="text" id="post-url" required placeholder="رابط مباشر">
+                    <label>صورة المنشور أو الغلاف (مربع الرفع):</label>
+                    <div onclick="document.getElementById('post-file-input').click()" style="border: 2px dashed #475569; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; background: #0f172a;">
+                        <span style="font-size: 2rem; display: block; color: #38bdf8;">+</span>
+                        <span id="post-file-label" style="color: #94a3b8; font-size: 0.9rem;">اضغط لاختيار صورة البوست من الآيباد</span>
+                    </div>
+                    <input type="file" id="post-file-input" accept="image/*" style="display:none;" onchange="handlePostImageUpload(this)">
                 </div>
                 <button type="submit" class="btn btn-register" style="width: 100%;">نشر المحتوى فوراً 🚀</button>
             </form>
         </section>
 
         <section class="card">
-            <h3>⚙️ التحكم اليدوي في الإيكات والمشاهدات للمنشورات</h3>
-            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">اختر المنشور وعدّل أرقام الإيكات والمشاهدات مباشرة:</p>
+            <h3>⚙️ التحكم اليدوي في الإيكات والمشاهدات</h3>
             <div id="admin-stats-list" style="display: flex; flex-direction: column; gap: 15px;"></div>
         </section>
 
@@ -97,10 +104,13 @@
 
     <script src="script.js"></script>
     <script>
+        let tempLogoData = "";
+        let tempPostImageData = "";
+
         document.addEventListener("DOMContentLoaded", () => {
             let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
             if (!currentUser || currentUser.id !== "111111111") {
-                alert("⛔ منطقة محظورة تماماً! هذه اللوحة مخصصة للسلطان صاحب الـ ID 111111111 فقط.");
+                alert("⛔ منطقة محظورة!");
                 window.location.href = "index.html";
             }
         });
@@ -120,20 +130,42 @@
             let settings = JSON.parse(localStorage.getItem("gojo_settings"));
             document.getElementById("primary-color-picker").value = settings.primaryColor;
             document.getElementById("secondary-color-picker").value = settings.secondaryColor;
-            document.getElementById("logo-url-input").value = settings.logoUrl;
-
+            tempLogoData = settings.logoUrl;
+            if(tempLogoData) {
+                document.getElementById("logo-file-label").innerText = "✅ تم رفع صورة اللوجو بنجاح";
+            }
             renderAdminSections();
             renderAdminPostsList();
+        }
+
+        function handleLogoUpload(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    tempLogoData = e.target.result;
+                    document.getElementById("logo-file-label").innerText = "✅ تم اختيار صورة اللوجو بنجاح: " + input.files[0].name;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function handlePostImageUpload(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    tempPostImageData = e.target.result;
+                    document.getElementById("post-file-label").innerText = "✅ تم اختيار صورة البوست بنجاح: " + input.files[0].name;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
         function saveSiteCustomization() {
             let pColor = document.getElementById("primary-color-picker").value;
             let sColor = document.getElementById("secondary-color-picker").value;
-            let lUrl = document.getElementById("logo-url-input").value.trim();
-
-            let settings = { primaryColor: pColor, secondaryColor: sColor, logoUrl: lUrl };
+            let settings = { primaryColor: pColor, secondaryColor: sColor, logoUrl: tempLogoData };
             localStorage.setItem("gojo_settings", JSON.stringify(settings));
-            alert("✨ تم حفظ وتحديث هوية وألوان اللوجو والموقع بنجاح!");
+            alert("✨ تم حفظ الهوية واللوجو بنجاح!");
             applySiteSettings();
         }
 
@@ -141,10 +173,8 @@
             let sections = JSON.parse(localStorage.getItem("gojo_sections")) || [];
             let box = document.getElementById("sections-list-box");
             let targetSelect = document.getElementById("post-section-target");
-            
             box.innerHTML = "";
             targetSelect.innerHTML = "";
-
             sections.forEach((sec, idx) => {
                 box.innerHTML += `<span style="background:#334155; padding: 5px 10px; border-radius:4px; display:inline-flex; align-items:center; gap:8px;">${sec} <button onclick="deleteSection(${idx})" style="background:#ef4444; color:white; border:none; padding:2px 6px; border-radius:3px; cursor:pointer;">حذف</button></span>`;
                 targetSelect.innerHTML += `<option value="${sec}">${sec}</option>`;
@@ -160,7 +190,6 @@
                 localStorage.setItem("gojo_sections", JSON.stringify(sections));
                 document.getElementById("new-section-name").value = "";
                 renderAdminSections();
-                alert("تم إضافة القسم بنجاح!");
             }
         }
 
@@ -173,19 +202,36 @@
 
         function addNewPost(e) {
             e.preventDefault();
+            if (!tempPostImageData) {
+                alert("الرجاء اختيار صورة للبوست عبر مربع الـ + أولاً!");
+                return;
+            }
             let type = document.getElementById("post-type").value;
             let section = document.getElementById("post-section-target").value;
             let title = document.getElementById("post-title").value.trim();
             let desc = document.getElementById("post-desc").value.trim();
-            let url = document.getElementById("post-url").value.trim();
 
             let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
-            let newPost = { id: Date.now(), type, section, title, desc, url, likes: 0, dislikes: 0, views: 0, likedBy: [], dislikedBy: [] };
+            let newPost = { 
+                id: Date.now(), 
+                type, 
+                section, 
+                title, 
+                desc, 
+                url: tempPostImageData, 
+                likes: 0, 
+                dislikes: 0, 
+                views: 0, 
+                likedBy: [], 
+                dislikedBy: [] 
+            };
             posts.push(newPost);
             localStorage.setItem("gojo_posts", JSON.stringify(posts));
 
-            alert("✅ تم نشر المحتوى بنجاح في الموقع!");
+            alert("✅ تم نشر المحتوى بنجاح في الموقع مع الصورة المرفوعة!");
             e.target.reset();
+            tempPostImageData = "";
+            document.getElementById("post-file-label").innerText = "اضغط لاختيار صورة البوست من الآيباد";
             renderAdminPostsList();
         }
 
@@ -193,34 +239,23 @@
             let list = document.getElementById("admin-stats-list");
             let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
             list.innerHTML = "";
-
             if (posts.length === 0) {
                 list.innerHTML = "<p>لا توجد منشورات حالياً.</p>";
                 return;
             }
-
             posts.forEach(p => {
                 list.innerHTML += `
                     <div style="background: #0f172a; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong>[${p.type === 'image' ? 'صورة' : 'فيديو'}] ${p.title}</strong>
-                            <button onclick="deletePost(${p.id})" class="btn" style="background: #ef4444; color:white; padding: 5px 10px; font-size:0.8rem;">حذف المنشور</button>
+                            <strong>${p.title}</strong>
+                            <button onclick="deletePost(${p.id})" class="btn" style="background: #ef4444; color:white; padding: 5px 10px; font-size:0.8rem;">حذف</button>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: center;">
-                            <div>
-                                <label style="font-size:0.8rem;">عدد الإيكات 👍:</label>
-                                <input type="number" id="likes-${p.id}" value="${p.likes || 0}" style="width:100%; padding:5px; background:#1e293b; color:white; border:1px solid #475569; border-radius:4px;">
-                            </div>
-                            <div>
-                                <label style="font-size:0.8rem;">عدد الديسلايكات 👎:</label>
-                                <input type="number" id="dislikes-${p.id}" value="${p.dislikes || 0}" style="width:100%; padding:5px; background:#1e293b; color:white; border:1px solid #475569; border-radius:4px;">
-                            </div>
-                            <div>
-                                <label style="font-size:0.8rem;">عدد المشاهدات 👁️:</label>
-                                <input type="number" id="views-${p.id}" value="${p.views || 0}" style="width:100% ; padding:5px; background:#1e293b; color:white; border:1px solid #475569; border-radius:4px;">
-                            </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                            <div><label style="font-size:0.75rem;">الإيكات:</label><input type="number" id="likes-${p.id}" value="${p.likes || 0}" style="width:100%; background:#1e293b; color:white; border:1px solid #475569; padding:4px;"></div>
+                            <div><label style="font-size:0.75rem;">الديسلايكات:</label><input type="number" id="dislikes-${p.id}" value="${p.dislikes || 0}" style="width:100%; background:#1e293b; color:white; border:1px solid #475569; padding:4px;"></div>
+                            <div><label style="font-size:0.75rem;">المشاهدات:</label><input type="number" id="views-${p.id}" value="${p.views || 0}" style="width:100%; background:#1e293b; color:white; border:1px solid #475569; padding:4px;"></div>
                         </div>
-                        <button onclick="updatePostStats(${p.id})" class="btn btn-register" style="padding: 5px; font-size:0.85rem;">حفظ التعديلات والإيكات والمشاهدات لهذا المنشور</button>
+                        <button onclick="updatePostStats(${p.id})" class="btn btn-register" style="padding: 4px; font-size:0.8rem;">حفظ الإحصائيات</button>
                     </div>
                 `;
             });
@@ -234,7 +269,7 @@
                 p.dislikes = parseInt(document.getElementById(`dislikes-${id}`).value) || 0;
                 p.views = parseInt(document.getElementById(`views-${id}`).value) || 0;
                 localStorage.setItem("gojo_posts", JSON.stringify(posts));
-                alert("✨ تم تحديث إحصائيات الإيكات والمشاهدات بنجاح!");
+                alert("✨ تم التحديث بنجاح!");
                 renderAdminPostsList();
             }
         }
