@@ -99,7 +99,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             let currentUser = JSON.parse(localStorage.getItem("gojo_current_user"));
-            if (!currentUser || currentUser.id !== "111111111" || currentUser.email !== "gojoesultan1@gmail.com") {
+            if (!currentUser || currentUser.id !== "111111111") {
                 alert("⛔ منطقة محظورة تماماً! هذه اللوحة مخصصة للسلطان صاحب الـ ID 111111111 فقط.");
                 window.location.href = "index.html";
             }
@@ -239,7 +239,6 @@
             }
         }
 
-        -> 
         function deletePost(id) {
             let posts = JSON.parse(localStorage.getItem("gojo_posts")) || [];
             posts = posts.filter(p => p.id !== id);
